@@ -355,12 +355,96 @@
             border: 1px solid white;
         }
 
+        /* Стили для модального окна пароля */
+        .password-modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .password-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            color: white;
+            font-family: 'Underdog', cursive;
+        }
+
+        .password-content h3 {
+            margin-top: 0;
+            color: #FFEBB7;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .password-input {
+            width: 80%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #FFEBB7;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1em;
+            text-align: center;
+            font-family: 'Underdog', cursive;
+        }
+
+        .password-submit {
+            background: #FFEBB7;
+            color: #333;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Underdog', cursive;
+            font-size: 1em;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+
+        .password-submit:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+        }
+
+        .password-cancel {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid #FFEBB7;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Underdog', cursive;
+            font-size: 1em;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+
+        .password-cancel:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .password-error {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: none;
+        }
+
         .dev-controls {
             position: fixed;
             top: 50px;
             left: 10px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #444;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff9900;
             border-radius: 10px;
             padding: 15px;
             z-index: 1000;
@@ -368,26 +452,44 @@
             color: white;
             font-family: monospace;
             font-size: 0.9em;
+            box-shadow: 0 5px 15px rgba(255, 153, 0, 0.3);
         }
 
         .dev-controls h3 {
             margin: 0 0 10px 0;
             color: #ff9900;
+            text-align: center;
         }
 
         .dev-btn {
-            background: #444;
+            background: #333;
             color: white;
-            border: none;
+            border: 1px solid #555;
             border-radius: 5px;
-            padding: 5px 10px;
-            margin: 2px;
+            padding: 8px 12px;
+            margin: 3px;
             cursor: pointer;
             font-size: 0.8em;
+            transition: all 0.3s ease;
+            width: 100%;
         }
 
         .dev-btn:hover {
-            background: #666;
+            background: #ff9900;
+            color: black;
+            transform: scale(1.02);
+        }
+
+        .dev-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            margin-bottom: 10px;
+        }
+
+        .dev-btn-group .dev-btn {
+            flex: 1;
+            min-width: 60px;
         }
 
         @media (max-width: 400px) {
@@ -455,28 +557,53 @@
                 left: 5px;
                 padding: 10px;
                 font-size: 0.8em;
+                max-width: 250px;
+            }
+
+            .password-content {
+                width: 280px;
+                margin: 20% auto;
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
     <!-- Скрытая кнопка для разработчика -->
-    <button class="dev-mode-button" onclick="toggleDevControls()">DEV</button>
+    <button class="dev-mode-button" onclick="showPasswordModal()">DEV</button>
+    
+    <!-- Модальное окно для ввода пароля -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-content">
+            <h3>🔐 Вход в режим разработчика</h3>
+            <p>Введите пароль для доступа к панели управления:</p>
+            <input type="password" id="passwordInput" class="password-input" placeholder="Введите пароль" onkeypress="handlePasswordKeypress(event)">
+            <div id="passwordError" class="password-error">Неверный пароль! Попробуйте снова.</div>
+            <div>
+                <button class="password-submit" onclick="checkPassword()">Войти</button>
+                <button class="password-cancel" onclick="hidePasswordModal()">Отмена</button>
+            </div>
+        </div>
+    </div>
     
     <!-- Панель управления разработчика -->
     <div class="dev-controls" id="devControls">
-        <h3>Режим разработчика</h3>
+        <h3>⚙️ Режим разработчика</h3>
         <button class="dev-btn" onclick="openAllHearts()">Открыть все дни</button>
         <button class="dev-btn" onclick="resetAll()">Сбросить всё</button>
-        <button class="dev-btn" onclick="setDay(1)">День 1</button>
-        <button class="dev-btn" onclick="setDay(2)">День 2</button>
-        <button class="dev-btn" onclick="setDay(3)">День 3</button>
-        <button class="dev-btn" onclick="setDay(4)">День 4</button>
-        <button class="dev-btn" onclick="setDay(5)">День 5</button>
-        <button class="dev-btn" onclick="setDay(6)">День 6</button>
-        <button class="dev-btn" onclick="setDay(7)">День 7</button>
+        <div class="dev-btn-group">
+            <button class="dev-btn" onclick="setDay(1)">День 1</button>
+            <button class="dev-btn" onclick="setDay(2)">День 2</button>
+            <button class="dev-btn" onclick="setDay(3)">День 3</button>
+            <button class="dev-btn" onclick="setDay(4)">День 4</button>
+        </div>
+        <div class="dev-btn-group">
+            <button class="dev-btn" onclick="setDay(5)">День 5</button>
+            <button class="dev-btn" onclick="setDay(6)">День 6</button>
+            <button class="dev-btn" onclick="setDay(7)">День 7</button>
+        </div>
         <button class="dev-btn" onclick="showAllButtons()">Показать все кнопки</button>
-        <button class="dev-btn" onclick="hideDevControls()">Скрыть</button>
+        <button class="dev-btn" onclick="hideDevControls()">❌ Скрыть панель</button>
     </div>
 
     <div class="container">
@@ -542,6 +669,9 @@
             specialAudio: 'последний_шаг.mp3'
         };
 
+        // 👇 ПАРОЛЬ ДЛЯ ДОСТУПА (можешь изменить на свой)
+        const DEV_PASSWORD = "hpbgdn";
+
         // Добавляем отслеживание открытых сердечек
         let openedHearts = 0;
         const totalHearts = 7;
@@ -556,11 +686,57 @@
         const chapterTextElement = document.getElementById('chapterText');
         const audioElement = document.getElementById('chapterAudio');
         const closeBtn = document.querySelector('.close');
+        const passwordModal = document.getElementById('passwordModal');
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordError = document.getElementById('passwordError');
 
-        // 👇 ФУНКЦИИ ДЛЯ РАЗРАБОТЧИКА
-        function toggleDevControls() {
+        // 👇 ФУНКЦИИ ДЛЯ РАБОТЫ С ПАРОЛЕМ
+        function showPasswordModal() {
+            passwordModal.style.display = 'block';
+            passwordInput.value = '';
+            passwordError.style.display = 'none';
+            passwordInput.focus();
+        }
+
+        function hidePasswordModal() {
+            passwordModal.style.display = 'none';
+            passwordInput.value = '';
+            passwordError.style.display = 'none';
+        }
+
+        function handlePasswordKeypress(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        }
+
+        function checkPassword() {
+            const enteredPassword = passwordInput.value;
+            
+            if (enteredPassword === DEV_PASSWORD) {
+                hidePasswordModal();
+                showDevControls();
+                // Запускаем небольшой фейерверк при успешном входе
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } else {
+                passwordError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+                // Анимация тряски при неверном пароле
+                passwordInput.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    passwordInput.style.animation = '';
+                }, 500);
+            }
+        }
+
+        function showDevControls() {
             const devControls = document.getElementById('devControls');
-            devControls.style.display = devControls.style.display === 'block' ? 'none' : 'block';
+            devControls.style.display = 'block';
         }
 
         function hideDevControls() {
@@ -579,23 +755,42 @@
             });
             currentDay = 7;
             saveOpenedHearts();
-            alert("Все дни открыты! Теперь можно просматривать любую главу.");
+            
+            // Показываем все секретные кнопки
+            showFairyButton();
+            showMapPuzzleButton();
+            showSecretButton();
+            showWaterElfButton();
+            
+            // Запускаем конфетти
+            launchConfetti();
+            
+            alert("✨ Все дни открыты! Теперь можно просматривать любую главу.");
         }
 
         function resetAll() {
             localStorage.removeItem('openedHearts');
+            localStorage.removeItem('currentDay');
             openedHearts = 0;
             currentDay = 1;
             createHearts();
             hideAllSecretButtons();
             updateCountdown();
-            alert("Всё сброшено! Начинаем заново.");
+            alert("🔄 Всё сброшено! Начинаем заново.");
         }
 
         function setDay(day) {
             currentDay = day;
             createHearts();
-            alert(`Установлен день ${day}. Доступны сердечки с 1 по ${day}`);
+            
+            // Показываем соответствующие кнопки для этого дня
+            hideAllSecretButtons();
+            if (day >= 1) showFairyButton();
+            if (day >= 2) showMapPuzzleButton();
+            if (day >= 3) showSecretButton();
+            if (day >= 4) showWaterElfButton();
+            
+            alert(`📅 Установлен день ${day}. Доступны сердечки с 1 по ${day}`);
         }
 
         function showAllButtons() {
@@ -603,7 +798,7 @@
             showMapPuzzleButton();
             showSecretButton();
             showWaterElfButton();
-            alert("Все секретные кнопки показаны!");
+            alert("🎮 Все секретные кнопки показаны!");
         }
 
         // 👇 ФУНКЦИЯ ДЛЯ ПОКАЗА КНОПКИ ФЕЙ (День 1)
@@ -629,7 +824,7 @@
             // Показываем кнопку
             setTimeout(() => {
                 fairyButton.classList.add('active');
-            }, 1000);
+            }, 100);
         }
 
         // 👇 ФУНКЦИЯ ДЛЯ ПОКАЗА СЕКРЕТНОЙ КНОПКИ (День 3)
@@ -655,7 +850,7 @@
             // Показываем кнопку
             setTimeout(() => {
                 secretButton.classList.add('active');
-            }, 1000);
+            }, 100);
         }
 
         // 👇 ФУНКЦИЯ ДЛЯ ПОКАЗА КНОПКИ КВЕСТА ВОДЯНОГО ЭЛЬФА (День 4)
@@ -682,7 +877,7 @@
             // Показываем кнопку
             setTimeout(() => {
                 waterElfButton.classList.add('active');
-            }, 1000);
+            }, 100);
         }
 
         // 👇 ФУНКЦИЯ ДЛЯ ПОКАЗА КНОПКИ КАРТЫ-ПАЗЛА (День 2)
@@ -708,7 +903,7 @@
             // Показываем кнопку
             setTimeout(() => {
                 mapButton.classList.add('active');
-            }, 1000);
+            }, 100);
         }
 
         // 👇 ФУНКЦИЯ ДЛЯ СКРЫТИЯ ВСЕХ СЕКРЕТНЫХ КНОПОК
@@ -948,6 +1143,17 @@
                 currentOpenedDay = null;
             }
         });
+
+        // Добавляем CSS анимацию для тряски
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
 
         // Инициализация
         updateCountdown();
