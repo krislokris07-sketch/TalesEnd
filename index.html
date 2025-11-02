@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <link rel="icon" type="image/png" href="иконка.png">
-    <title>Для храбрых сердцем!</title>
+    <title>Для храбрых сердцем! - ТЕСТОВЫЙ РЕЖИМ</title>
     <link href="https://fonts.googleapis.com/css2?family=Underdog&display=swap&subset=cyrillic" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <style>
@@ -303,6 +303,70 @@
             background: rgba(189, 224, 181, 1);
         }
 
+        .map-puzzle-button {
+            position: fixed;
+            bottom: 260px;
+            right: 20px;
+            background: rgba(139, 69, 19, 0.9);
+            color: #FFEBB7;
+            border: 2px solid #8B4513;
+            border-radius: 20px;
+            padding: 10px 15px;
+            font-family: cursive;
+            font-size: 0.9em;
+            cursor: pointer;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.5s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+
+        .map-puzzle-button.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .map-puzzle-button:hover {
+            transform: scale(1.05);
+            background: rgba(160, 82, 45, 0.9);
+        }
+
+        /* Стили для тестовой кнопки */
+        .test-mode-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+            color: white;
+            border: 2px solid gold;
+            border-radius: 15px;
+            padding: 12px 20px;
+            font-family: 'Underdog', cursive;
+            font-size: 1em;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+            animation: rainbow 3s infinite;
+        }
+
+        .test-mode-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 1);
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .test-mode-button {
+            background-size: 400% 400%;
+        }
+
         @media (max-width: 400px) {
             .container {
                 margin-top: 20px;
@@ -336,7 +400,8 @@
 
             .secret-magic-button,
             .water-elf-button,
-            .fairy-button {
+            .fairy-button,
+            .map-puzzle-button {
                 bottom: 20px;
                 right: 10px;
                 font-size: 0.8em;
@@ -350,19 +415,33 @@
             .fairy-button {
                 bottom: 120px;
             }
+
+            .map-puzzle-button {
+                bottom: 170px;
+            }
+
+            .test-mode-button {
+                top: 10px;
+                left: 10px;
+                font-size: 0.8em;
+                padding: 8px 12px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- ТЕСТОВАЯ КНОПКА -->
+    <button class="test-mode-button" onclick="enableTestMode()">🎮 ТЕСТОВЫЙ РЕЖИМ</button>
+
     <div class="container">
-        <h1 class="main-title">Заколдованный<br>отсчет</h1>
+        <h1 class="main-title">Заколдованный<br>отсчет - ТЕСТ</h1>
         
         <div class="subtitle-block">
-            <p class="fairy-text">Не спеши, добрый молодец, не торопи, красна девица...</p>
-            <p class="fairy-text">Сказка начнётся, как только ночь соткёт из лунного света свою серебряную нить, а это случится...</p>
+            <p class="fairy-text">ТЕСТОВЫЙ РЕЖИМ: Все дни доступны для просмотра</p>
+            <p class="fairy-text">Нажмите кнопку "ТЕСТОВЫЙ РЕЖИМ" слева вверху чтобы активировать все функции</p>
         </div>
         
-        <div id="countdown" class="countdown-text">совсем скоро</div>
+        <div id="countdown" class="countdown-text">ТЕСТОВЫЙ РЕЖИМ АКТИВЕН</div>
         
         <div class="hearts-container">
             <!-- 7 сердечек будут сгенерированы скриптом -->
@@ -391,7 +470,9 @@
             heartImage: 'сердечко.png',
             gifts: [
                 "Глава 1. Тайна Шёпота Фей\n\n«Куда подевался молочный зуб того крохи? — перешёптываются феи у изголовья. — Чтобы узнать ответ, отправляйся в лес и найди ту, что знает все тайны...»",
-                "Глава 2. Мудрость Дремучего Леса\n\n«Старый дуб, что знает все истории на свете, приоткрыл свою потайную дверцу. Там, среди мудрых страниц, спрятан ключ к новой приключенческой саге».",
+                
+                // 👇 ДЕНЬ 2 - КАРТА-ПАЗЛ
+                "Глава 2. Мудрость Дремучего Леса\n\n«Старый дуб сохранил подсказку, но ветра разорвали её на части. Собери все фрагменты карты, чтобы узнать, где спрятан ключ к следующей главе...»",
                 
                 // 👇 ДЕНЬ 3 - С НАМЁКОМ НА СЕКРЕТНУЮ КНОПКУ
                 "Глава 3. Напевы Волшебного Свиреля\n\n«Чтобы услышать магическую мелодию, что заставляет пуститься в пляс даже лесных великанов, нужно лишь попросить: Алиса, магическая колонна,открой музыку леса...»",
@@ -421,6 +502,7 @@
         let lastStepAudioPlayed = false;
         let confettiLaunched = false;
         let currentOpenedDay = null; // Текущий открытый день для модального окна
+        let testMode = false; // Флаг тестового режима
 
         const countdownElement = document.getElementById('countdown');
         const heartsContainer = document.querySelector('.hearts-container');
@@ -428,6 +510,34 @@
         const chapterTextElement = document.getElementById('chapterText');
         const audioElement = document.getElementById('chapterAudio');
         const closeBtn = document.querySelector('.close');
+
+        // 👇 ФУНКЦИЯ ДЛЯ АКТИВАЦИИ ТЕСТОВОГО РЕЖИМА
+        function enableTestMode() {
+            testMode = true;
+            countdownElement.textContent = "ТЕСТОВЫЙ РЕЖИМ: Все дни доступны!";
+            
+            // Открываем все сердечки
+            const hearts = document.querySelectorAll('.heart');
+            hearts.forEach((heart, index) => {
+                if (!heart.classList.contains('opened')) {
+                    heart.classList.add('opened');
+                    openedHearts++;
+                }
+                heart.style.cursor = 'pointer';
+                heart.style.opacity = '1';
+            });
+            
+            // Показываем все секретные кнопки
+            showFairyButton();
+            showMapPuzzleButton();
+            showSecretButton();
+            showWaterElfButton();
+            
+            // Сохраняем состояние
+            saveOpenedHearts();
+            
+            alert("ТЕСТОВЫЙ РЕЖИМ АКТИВИРОВАН!\n\n✅ Все 7 дней теперь доступны\n✅ Все секретные кнопки показаны\n✅ Можно просматривать любую главу\n✅ Все сердечки открыты");
+        }
 
         // 👇 ФУНКЦИЯ ДЛЯ ПОКАЗА КНОПКИ ФЕЙ (День 1)
         function showFairyButton() {
@@ -452,7 +562,7 @@
             // Показываем кнопку
             setTimeout(() => {
                 fairyButton.classList.add('active');
-            }, 1000);
+            }, 100);
         }
 
         // 👇 ФУНКЦИЯ ДЛЯ ПОКАЗА СЕКРЕТНОЙ КНОПКИ (День 3)
@@ -478,7 +588,7 @@
             // Показываем кнопку
             setTimeout(() => {
                 secretButton.classList.add('active');
-            }, 1000);
+            }, 100);
         }
 
         // 👇 ФУНКЦИЯ ДЛЯ ПОКАЗА КНОПКИ КВЕСТА ВОДЯНОГО ЭЛЬФА (День 4)
@@ -505,14 +615,42 @@
             // Показываем кнопку
             setTimeout(() => {
                 waterElfButton.classList.add('active');
-            }, 1000);
+            }, 100);
+        }
+
+        // 👇 ФУНКЦИЯ ДЛЯ ПОКАЗА КНОПКИ КАРТЫ-ПАЗЛА (День 2)
+        function showMapPuzzleButton() {
+            let mapButton = document.querySelector('.map-puzzle-button');
+            
+            if (!mapButton) {
+                // Создаем кнопку карты-пазла
+                mapButton = document.createElement('button');
+                mapButton.className = 'map-puzzle-button';
+                mapButton.textContent = '🧩 Собрать карту';
+                mapButton.title = 'Собрать разорванную карту с подсказкой';
+                
+                // Добавляем кнопку на страницу
+                document.body.appendChild(mapButton);
+                
+                // 👇 ПЕРЕАДРЕСАЦИЯ НА КАРТУ-ПАЗЛ
+                mapButton.addEventListener('click', function() {
+                    window.open('https://krislokris07-sketch.github.io/secret-map-puzzle/', '_blank');
+                });
+            }
+            
+            // Показываем кнопку
+            setTimeout(() => {
+                mapButton.classList.add('active');
+            }, 100);
         }
 
         // 👇 ФУНКЦИЯ ДЛЯ СКРЫТИЯ ВСЕХ СЕКРЕТНЫХ КНОПОК
         function hideAllSecretButtons() {
-            document.querySelectorAll('.secret-magic-button, .water-elf-button, .fairy-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            if (!testMode) {
+                document.querySelectorAll('.secret-magic-button, .water-elf-button, .fairy-button, .map-puzzle-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            }
         }
 
         // Функция для сохранения состояния в localStorage
@@ -570,6 +708,11 @@
         }
 
         function updateCountdown() {
+            if (testMode) {
+                countdownElement.textContent = "ТЕСТОВЫЙ РЕЖИМ: Все дни доступны!";
+                return;
+            }
+
             const now = new Date();
             const birthday = new Date(config.birthdayDate);
             const timeDiff = birthday - now;
@@ -610,20 +753,9 @@
         }
 
         function createHearts() {
-            const now = new Date();
-            const birthday = new Date(config.birthdayDate);
+            // В тестовом режиме все сердечки доступны
+            const currentDay = testMode ? 7 : 1;
             
-            // Начинаем отсчет за 6 дней до ДР (18 декабря для ДР 24 декабря)
-            const startDate = new Date(birthday);
-            startDate.setDate(birthday.getDate() - 6);
-            
-            // Определяем, сколько дней прошло с начала отсчета
-            const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-            
-            // Определяем, какой день сейчас (от 1 до 7)
-            // День 1 = 18 декабря, день 7 = 24 декабря
-            const currentDay = Math.min(Math.max(daysPassed + 1, 1), 7);
-
             // Загружаем сохраненные открытые сердечки
             const savedOpenedHearts = loadOpenedHearts();
 
@@ -636,9 +768,9 @@
                 heart.innerHTML = `<div class="heart-number">${i}</div>`;
                 heart.style.backgroundImage = `url('${config.heartImage}')`;
 
-                // Проверяем, можно ли открыть это сердечко
-                const isAvailable = i <= currentDay;
-                const wasOpened = savedOpenedHearts.includes(i - 1);
+                // В тестовом режиме все сердечки доступны
+                const isAvailable = testMode ? true : i <= currentDay;
+                const wasOpened = savedOpenedHearts.includes(i - 1) || testMode;
 
                 if (isAvailable) {
                     // Сердечко доступно для открытия
@@ -646,9 +778,10 @@
                     heart.style.cursor = 'pointer';
                     heart.style.opacity = '1';
                     
-                    // Помечаем как открытое, если оно было открыто ранее
-                    if (wasOpened) {
+                    // Помечаем как открытое, если оно было открыто ранее или в тестовом режиме
+                    if (wasOpened || testMode) {
                         heart.classList.add('opened');
+                        if (!testMode) openedHearts++;
                     }
                 } else {
                     // Сердечко еще недоступно
@@ -657,6 +790,14 @@
                 }
 
                 heartsContainer.appendChild(heart);
+            }
+
+            // В тестовом режиме сразу показываем все кнопки
+            if (testMode) {
+                showFairyButton();
+                showMapPuzzleButton();
+                showSecretButton();
+                showWaterElfButton();
             }
         }
 
@@ -676,7 +817,7 @@
             
             if (!currentHeart.classList.contains('opened')) {
                 currentHeart.classList.add('opened');
-                openedHearts++;
+                if (!testMode) openedHearts++;
                 saveOpenedHearts();
                 
                 // 👇 ВАЖНО: показываем кнопки в зависимости от дня
@@ -684,17 +825,22 @@
                     // День 1 - кнопка фей
                     setTimeout(() => {
                         showFairyButton();
-                    }, 2000);
+                    }, 500);
+                } else if (dayNumber === 2) {
+                    // 👇 День 2 - кнопка карты-пазла
+                    setTimeout(() => {
+                        showMapPuzzleButton();
+                    }, 500);
                 } else if (dayNumber === 3) {
                     // День 3 - кнопка музыки
                     setTimeout(() => {
                         showSecretButton();
-                    }, 2000);
+                    }, 500);
                 } else if (dayNumber === 4) {
                     // День 4 - кнопка квеста водяного эльфа
                     setTimeout(() => {
                         showWaterElfButton();
-                    }, 2000);
+                    }, 500);
                 }
                 
                 checkAllHeartsOpened();
@@ -702,6 +848,8 @@
                 // Если сердечко уже было открыто, все равно показываем соответствующую кнопку
                 if (dayNumber === 1) {
                     showFairyButton();
+                } else if (dayNumber === 2) {
+                    showMapPuzzleButton();
                 } else if (dayNumber === 3) {
                     showSecretButton();
                 } else if (dayNumber === 4) {
@@ -730,8 +878,10 @@
             modal.style.display = 'none';
             audioElement.pause();
             audioElement.currentTime = 0;
-            // Скрываем все секретные кнопки при закрытии окна
-            hideAllSecretButtons();
+            // Скрываем все секретные кнопки при закрытии окна (кроме тестового режима)
+            if (!testMode) {
+                hideAllSecretButtons();
+            }
             currentOpenedDay = null;
         });
 
@@ -740,8 +890,10 @@
                 modal.style.display = 'none';
                 audioElement.pause();
                 audioElement.currentTime = 0;
-                // Скрываем все секретные кнопки при закрытии окна
-                hideAllSecretButtons();
+                // Скрываем все секретные кнопки при закрытии окна (кроме тестового режима)
+                if (!testMode) {
+                    hideAllSecretButtons();
+                }
                 currentOpenedDay = null;
             }
         });
