@@ -308,6 +308,16 @@
             background: rgba(139, 90, 43, 0.95);
         }
 
+        .city-seven-button {
+            background: rgba(184, 134, 11, 0.95);
+            color: #FFF8DC;
+            border: 2px solid #DAA520;
+        }
+
+        .city-seven-button:hover {
+            background: rgba(218, 165, 32, 0.95);
+        }
+
         /* Стили для скрытой тестовой кнопки */
         .dev-mode-button {
             position: fixed;
@@ -727,6 +737,9 @@
                 case 6:
                     button = createAdventureButton();
                     break;
+                case 7:
+                    button = createCitySevenButton();
+                    break;
                 default:
                     return;
             }
@@ -792,6 +805,16 @@
             button.innerHTML = '🎒 Открыть сундук приключений';
             button.onclick = function() {
                 window.open('https://krislokris07-sketch.github.io/casegift/', '_blank');
+            };
+            return button;
+        }
+
+        function createCitySevenButton() {
+            const button = document.createElement('button');
+            button.className = 'secret-button city-seven-button';
+            button.innerHTML = '🏰 Войти в королевскую трапезную';
+            button.onclick = function() {
+                window.open('https://krislokris07-sketch.github.io/cityseven/', '_blank');
             };
             return button;
         }
