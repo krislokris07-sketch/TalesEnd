@@ -124,6 +124,77 @@
             color: #fff;
         }
 
+        /* Стили для всплывающего окна благословения */
+        .blessing-modal {
+            display: none;
+            position: fixed;
+            z-index: 150;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        .blessing-content {
+            background: linear-gradient(135deg, #1a472a 0%, #2e8b57 100%);
+            margin: 20% auto;
+            padding: 40px 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+            color: #f0f8ff;
+            font-family: 'Underdog', cursive;
+            border: 3px solid #ffd700;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); }
+            100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+        }
+
+        .blessing-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            line-height: 1.3;
+        }
+
+        .blessing-text {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .blessing-button {
+            background: linear-gradient(to bottom, #ffd700, #ffaa00);
+            color: #1a472a;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Underdog', cursive;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .blessing-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(to bottom, #fff000, #ff9900);
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -528,12 +599,35 @@
                 margin: 20% auto;
                 padding: 20px;
             }
+
+            .blessing-content {
+                padding: 25px 15px;
+                margin: 30% auto;
+            }
+
+            .blessing-title {
+                font-size: 1.5em;
+            }
+
+            .blessing-text {
+                font-size: 1.1em;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Скрытая кнопка для разработчика -->
     <button class="dev-mode-button" onclick="showPasswordModal()">DEV</button>
+    
+    <!-- Модальное окно для благословения -->
+    <div id="blessingModal" class="blessing-modal">
+        <div class="blessing-content">
+            <h2 class="blessing-title">🎄 Хранительница леса благословила тебя на два дара в один день! 🎄</h2>
+            <p class="blessing-text">Ты везунчик! Сегодня волшебная сила леса позволяет открыть сразу два сердечка!<br><br>
+            Сначала открой сердечко №3, а затем сразу сможешь открыть и сердечко №4!</p>
+            <button class="blessing-button" onclick="closeBlessingModal()">Открыть дары леса 🌟</button>
+        </div>
+    </div>
     
     <!-- Модальное окно для ввода пароля -->
     <div id="passwordModal" class="password-modal">
@@ -633,6 +727,7 @@
         let confettiLaunched = false;
         let currentOpenedDay = null;
         let currentDay = 1;
+        let blessingShownForDay3 = false; // Флаг для показа благословения
 
         const countdownElement = document.getElementById('countdown');
         const heartsContainer = document.querySelector('.hearts-container');
@@ -644,6 +739,7 @@
         const passwordInput = document.getElementById('passwordInput');
         const passwordError = document.getElementById('passwordError');
         const secretButtonsContainer = document.getElementById('secretButtonsContainer');
+        const blessingModal = document.getElementById('blessingModal');
 
         // 👇 ФУНКЦИИ ДЛЯ РАБОТЫ С ПАРОЛЕМ
         function showPasswordModal() {
@@ -699,8 +795,10 @@
         function resetAll() {
             localStorage.removeItem('openedHearts');
             localStorage.removeItem('currentDay');
+            localStorage.removeItem('blessingShownForDay3');
             openedHearts = 0;
             currentDay = 1;
+            blessingShownForDay3 = false;
             createHearts();
             updateCountdown();
             alert("🔄 Прогресс сброшен! Начинаем заново.");
@@ -710,6 +808,18 @@
             currentDay = day;
             createHearts();
             alert(`📅 Установлен день ${day}. Теперь можно открывать дни с 1 по ${day} в правильной последовательности.`);
+        }
+
+        // 👇 ФУНКЦИИ ДЛЯ ВСПЛЫВАЮЩЕГО ОКНА БЛАГОСЛОВЕНИЯ
+        function showBlessingModal() {
+            blessingModal.style.display = 'block';
+            // Сохраняем факт показа благословения
+            blessingShownForDay3 = true;
+            localStorage.setItem('blessingShownForDay3', 'true');
+        }
+
+        function closeBlessingModal() {
+            blessingModal.style.display = 'none';
         }
 
         // 👇 ФУНКЦИИ ДЛЯ СОЗДАНИЯ СЕКРЕТНЫХ КНОПОК ВНУТРИ МОДАЛКИ
@@ -840,9 +950,14 @@
         function loadOpenedHearts() {
             const saved = localStorage.getItem('openedHearts');
             const savedDay = localStorage.getItem('currentDay');
+            const savedBlessing = localStorage.getItem('blessingShownForDay3');
             
             if (savedDay) {
                 currentDay = parseInt(savedDay);
+            }
+            
+            if (savedBlessing === 'true') {
+                blessingShownForDay3 = true;
             }
             
             if (saved) {
@@ -884,6 +999,33 @@
             }());
         }
 
+        // Модифицированная функция для расчета текущего дня
+        function calculateCurrentDay() {
+            const now = new Date();
+            
+            // Логика дней:
+            // 19 декабря - день 1
+            // 20 декабря - день 2
+            // 21 декабря - день 3 (и также день 4 доступен!)
+            // 22 декабря - день 5
+            // 23 декабря - день 6
+            // 24 декабря - день 7
+            
+            const startDate = new Date('2025-12-19');
+            const diffTime = now - startDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            
+            if (diffDays < 1) return 0; // До 19 декабря
+            if (diffDays === 1) return 1; // 19 декабря
+            if (diffDays === 2) return 2; // 20 декабря
+            if (diffDays === 3) return 4; // 21 декабря - возвращаем 4, так как доступны и 3 и 4 день
+            if (diffDays === 4) return 5; // 22 декабря
+            if (diffDays === 5) return 6; // 23 декабря
+            if (diffDays >= 6) return 7; // 24 декабря и позже
+            
+            return diffDays;
+        }
+
         function updateCountdown() {
             const now = new Date();
             const birthday = new Date(config.birthdayDate);
@@ -921,6 +1063,12 @@
             const savedOpenedHearts = loadOpenedHearts();
             heartsContainer.innerHTML = '';
 
+            // Рассчитываем текущий день на основе даты
+            const calculatedDay = calculateCurrentDay();
+            if (calculatedDay > currentDay) {
+                currentDay = calculatedDay;
+            }
+
             for (let i = 1; i <= 7; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
@@ -930,7 +1078,19 @@
                 const isAvailable = i <= currentDay;
                 const wasOpened = savedOpenedHearts.includes(i - 1);
 
-                if (isAvailable) {
+                // Специальная логика для дней 3 и 4
+                if (currentDay >= 4 && (i === 3 || i === 4)) {
+                    // Если это 21 декабря (день 3 и 4), то оба доступны
+                    heart.addEventListener('click', () => openGift(i));
+                    heart.style.cursor = 'pointer';
+                    heart.style.opacity = '1';
+                    
+                    if (wasOpened) {
+                        heart.classList.add('opened');
+                    }
+                } 
+                else if (isAvailable) {
+                    // Для остальных дней обычная логика
                     heart.addEventListener('click', () => openGift(i));
                     heart.style.cursor = 'pointer';
                     heart.style.opacity = '1';
@@ -948,6 +1108,12 @@
         }
 
         function openGift(dayNumber) {
+            // Проверяем, нужно ли показать благословение
+            if (dayNumber === 3 && !blessingShownForDay3 && !document.querySelectorAll('.heart')[2].classList.contains('opened')) {
+                showBlessingModal();
+                return; // Не открываем подарок, пока пользователь не закроет окно благословения
+            }
+            
             currentOpenedDay = dayNumber;
             chapterTextElement.textContent = config.gifts[dayNumber - 1];
             audioElement.src = config.audioFiles[dayNumber - 1];
@@ -999,6 +1165,9 @@
                 removeSecretButtons();
                 currentOpenedDay = null;
             }
+            if (event.target == blessingModal) {
+                closeBlessingModal();
+            }
         });
 
         const style = document.createElement('style');
@@ -1014,6 +1183,14 @@
         updateCountdown();
         createHearts();
         setInterval(updateCountdown, 60000);
+        // Также обновляем дни каждый час на случай, если пользователь оставит страницу открытой
+        setInterval(() => {
+            const newDay = calculateCurrentDay();
+            if (newDay !== currentDay) {
+                currentDay = newDay;
+                createHearts();
+            }
+        }, 3600000); // Каждый час
     </script>
 </body>
 </html>
